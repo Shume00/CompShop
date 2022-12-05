@@ -21,7 +21,7 @@ CREATE TABLE Admins
   type VARCHAR(50) NOT NULL,
   userID INT NOT NULL,
   PRIMARY KEY (userID),
-  FOREIGN KEY (userID) REFERENCES Users(userID),
+  FOREIGN KEY (userID) REFERENCES Users(userID)
 );
 
 CREATE TABLE Manufacturer
