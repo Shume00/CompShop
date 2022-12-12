@@ -1,180 +1,140 @@
-CREATE TABLE Users
+create table Users
 (
-  username VARCHAR(50) NOT NULL,
-  userpass VARCHAR(50) NOT NULL,
-  userID INT NOT NULL,
-  fullname VARCHAR(100) NOT NULL,
-  PRIMARY KEY (userID)
+  userID integer primary key,
+  username varchar(50) unique,
+  password varchar(50) not null,
+  name varchar(100) not null
 );
 
-CREATE TABLE Customer
+create table Customer
 (
-  phoneNumber VARCHAR(50) NOT NULL,
-  address VARCHAR(100) NOT NULL,
-  userID INT NOT NULL,
-  PRIMARY KEY (userID),
-  FOREIGN KEY (userID) REFERENCES Users(userID)
+  userID integer primary key references Users(userID),
+  phoneNumber varchar(50) not null,
+  address varchar(100) not null
 );
 
-CREATE TABLE Admins
+create table Admins
 (
-  type VARCHAR(50) NOT NULL,
-  userID INT NOT NULL,
-  PRIMARY KEY (userID),
-  FOREIGN KEY (userID) REFERENCES Users(userID)
+  userID integer primary key references Users(userID),
+  type varchar(50) not null
 );
 
-CREATE TABLE Manufacturer
+create table Manufacturer
 (
-  manufacturerID INT NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  PRIMARY KEY (manufacturerID)
+  manufacturerID integer primary key,
+  name varchar(100) not null
 );
 
-CREATE TABLE Category
+create table Category
 (
-  categoryID INT NOT NULL,
-  name VARCHAR(50) NOT NULL,
-  subCategoryOf_categoryID INT NOT NULL,
-  PRIMARY KEY (categoryID),
-  FOREIGN KEY (subCategoryOf_categoryID) REFERENCES Category(categoryID)
+  categoryID integer primary key,
+  name varchar(50) not null,
+  subCategoryOf integer references Category(categoryID)
 );
 
-CREATE TABLE Product
+create table Product
 (
-  productID INT NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  adminID INT NOT NULL,
-  manufacturerID INT NOT NULL,
-  categoryID INT NOT NULL,
-  PRIMARY KEY (productID),
-  FOREIGN KEY (adminID) REFERENCES Admins(userID),
-  FOREIGN KEY (manufacturerID) REFERENCES Manufacturer(manufacturerID),
-  FOREIGN KEY (categoryID) REFERENCES Category(categoryID)
+  productID integer primary key,
+  name varchar(100) not null,
+  adminID integer references Admins(userID) not null,
+  manufacturerID integer references Manufacturer(manufacturerID) not null,
+  categoryID integer references Category(categoryID) not null
 );
 
-CREATE TABLE Product_images
+create table Product_images
 (
-  images VARCHAR(100) NOT NULL,
-  productID INT NOT NULL,
-  PRIMARY KEY (images, productID),
-  FOREIGN KEY (productID) REFERENCES Product(productID)
+  productID integer references Product(productID) not null,
+  images varchar(10000) not null,
+  constraint pk_Product_images primary key (productID, images)
 );
 
-CREATE TABLE Price
+create table Price
 (
-  startDate DATE NOT NULL,
-  endDate DATE NOT NULL,
-  value INT NOT NULL,
-  productID INT NOT NULL,
-  PRIMARY KEY (startDate, productID),
-  FOREIGN KEY (productID) REFERENCES Product(productID)
+  productID integer references Product(productID) not null,
+  startDate date not null,
+  endDate date,
+  value integer not null,
+  constraint pk_Price primary key(productID, startDate)
 );
 
-CREATE TABLE Promotion
+create table Promotion
 (
-  code VARCHAR NOT NULL,
-  startDate DATE NOT NULL,
-  endDate DATE NOT NULL,
-  percentage INT NOT NULL,
-  adminID INT NOT NULL,
-  PRIMARY KEY (code),
-  FOREIGN KEY (adminID) REFERENCES Admins(UserID)
+  code char(18) primary key,
+  startDate date not null,
+  endDate date,
+  percentage integer not null,
+  adminID integer references Admins(userID) not null
 );
 
-CREATE TABLE Stock_Order
+create table Stock_Order
 (
-  stockOrderID INT NOT NULL,
-  date DATE NOT NULL,
-  adminID INT NOT NULL,
-  manufacturerID INT NOT NULL,
-  PRIMARY KEY (stockOrderID),
-  FOREIGN KEY (adminID) REFERENCES Admins(userID),
-  FOREIGN KEY (manufacturerID) REFERENCES Manufacturer(manufacturerID)
+  stockOrderID integer primary key,
+  orderDate date not null,
+  adminID integer references Admins(UserID) not null,
+  manufacturerID integer references Manufacturer(manufacturerID) not null
 );
 
-CREATE TABLE Shopping_Cart
+create table Shopping_Cart
 (
-  scID INT NOT NULL,
-  customerID INT NOT NULL,
-  PRIMARY KEY (scID),
-  FOREIGN KEY (customerID) REFERENCES Customer(userID)
+  scID integer primary key,
+  customerID integer references Customer(userID) not null
 );
 
-CREATE TABLE Delivery_Firm
+create table Delivery_Firm
 (
-  deliveryFirmID INT NOT NULL,
-  address VARCHAR(100) NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  PRIMARY KEY (deliveryFirmID)
+  deliveryFirmID integer primary key,
+  address varchar(100),
+  name varchar(100) not null
 );
 
-CREATE TABLE Delivery_Agent
+create table Delivery_Agent
 (
-  deliveryAgentID INT NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  deliveryFirmID INT NOT NULL,
-  PRIMARY KEY (deliveryAgentID),
-  FOREIGN KEY (deliveryFirmID) REFERENCES Delivery_Firm(deliveryFirmID)
+  deliveryAgentID integer primary key,
+  name varchar(100),
+  deliveryFirmID integer references Delivery_Firm(deliveryFirmID) not null
 );
 
-CREATE TABLE Orders
+create table Orders
 (
-  orderID INT NOT NULL,
-  status VARCHAR(50) NOT NULL,
-  date DATE NOT NULL,
-  totalPrice INT NOT NULL,
-  adminID INT NOT NULL,
-  customerID INT NOT NULL,
-  scID INT NOT NULL,
-  deliveryFirmID INT NOT NULL,
-  code VARCHAR NOT NULL,
-  PRIMARY KEY (orderID),
-  FOREIGN KEY (adminID) REFERENCES Admins(userID),
-  FOREIGN KEY (customerID) REFERENCES Customer(userID),
-  FOREIGN KEY (scID) REFERENCES Shopping_Cart(scID),
-  FOREIGN KEY (deliveryFirmID) REFERENCES Delivery_Firm(deliveryFirmID),
-  FOREIGN KEY (code) REFERENCES Promotion(code)
+  orderID integer primary key,
+  status varchar(50) not null,
+  date date not null,
+  totalPrice integer not null,
+  adminID integer references Admins(UserID),
+  customerID integer references Customer(UserID) not null,
+  scID integer references Shopping_Cart(scID) not null,
+  deliveryFirmID integer references Delivery_Firm(deliveryFirmID),
+  code char(18) references Promotion(code)
+);
+
+create table productIsInsideSO
+(
+  quantity integer not null,
+  productID integer references Product(productID) not null,
+  stockOrderID integer references Stock_Order(stockOrderID) not null,
+  constraint pk_productIsInsideSO primary key(productID,stockOrderID)
+);
+
+create table orderHasProduct
+(
+  quantity integer not null,
+  orderID integer references Orders(orderID) not null,
+  productID integer references Product(productID) not null,
+  constraint pk_orderHasProduct primary key(orderID, productID)
+);
+
+create table productIsInSC
+(
+  quantity integer not null,
+  productID integer references Product(productID) not null,
+  scID integer references Shopping_Cart(scID) not null,
+  constraint pk_productIsInSC primary key(productID, scID)
 );
 
 
-
-CREATE TABLE isInside
+create table productIsOfCategory
 (
-  quantity INT NOT NULL,
-  productID INT NOT NULL,
-  stockOrderID INT NOT NULL,
-  PRIMARY KEY (productID, stockOrderID),
-  FOREIGN KEY (productID) REFERENCES Product(productID),
-  FOREIGN KEY (stockOrderID) REFERENCES Stock_Order(stockOrderID)
-);
-
-CREATE TABLE hasProduct
-(
-  quantity INT NOT NULL,
-  orderID INT NOT NULL,
-  productID INT NOT NULL,
-  PRIMARY KEY (orderID, productID),
-  FOREIGN KEY (orderID) REFERENCES Orders(orderID),
-  FOREIGN KEY (productID) REFERENCES Product(productID)
-);
-
-CREATE TABLE isIn
-(
-  quantity INT NOT NULL,
-  productID INT NOT NULL,
-  scID INT NOT NULL,
-  PRIMARY KEY (productID, scID),
-  FOREIGN KEY (productID) REFERENCES Product(productID),
-  FOREIGN KEY (scID) REFERENCES Shopping_Cart(scID)
-);
-
-
-CREATE TABLE isOf
-(
-  categoryID INT NOT NULL,
-  productID INT NOT NULL,
-  PRIMARY KEY (categoryID, productID),
-  FOREIGN KEY (categoryID) REFERENCES Category(categoryID),
-  FOREIGN KEY (productID) REFERENCES Product(productID)
+  categoryID integer references Category(categoryID) not null,
+  productID integer references Product(productID) not null,
+  constraint pk_productIsOfCategory primary key(categoryID, productID)
 );
