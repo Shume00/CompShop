@@ -1,9 +1,9 @@
 create table Users
 (
-  userID integer primary key,
+  userID serial primary key,
   username varchar(50) unique,
-  password varchar(50) not null,
-  name varchar(100) not null
+  userpass varchar(50) not null,
+  nameOfUser varchar(100) not null
 );
 
 create table Customer
@@ -16,26 +16,26 @@ create table Customer
 create table Admins
 (
   userID integer primary key references Users(userID),
-  type varchar(50) not null
+  typeOfAdmin varchar(50) not null
 );
 
 create table Manufacturer
 (
-  manufacturerID integer primary key,
-  name varchar(100) not null
+  manufacturerID serial primary key,
+  nameOfManufacturer varchar(100) not null
 );
 
 create table Category
 (
-  categoryID integer primary key,
-  name varchar(50) not null,
+  categoryID serial primary key,
+  nameOfCategory varchar(50) not null,
   subCategoryOf integer references Category(categoryID)
 );
 
 create table Product
 (
-  productID integer primary key,
-  name varchar(100) not null,
+  productID serial primary key,
+  nameOfProduct varchar(100) not null,
   adminID integer references Admins(userID) not null,
   manufacturerID integer references Manufacturer(manufacturerID) not null,
   categoryID integer references Category(categoryID) not null
@@ -59,7 +59,7 @@ create table Price
 
 create table Promotion
 (
-  code char(18) primary key,
+  code char(16) primary key,
   startDate date not null,
   endDate date,
   percentage integer not null,
@@ -68,7 +68,7 @@ create table Promotion
 
 create table Stock_Order
 (
-  stockOrderID integer primary key,
+  stockOrderID serial primary key,
   orderDate date not null,
   adminID integer references Admins(UserID) not null,
   manufacturerID integer references Manufacturer(manufacturerID) not null
@@ -76,29 +76,29 @@ create table Stock_Order
 
 create table Shopping_Cart
 (
-  scID integer primary key,
+  scID serial primary key,
   customerID integer references Customer(userID) not null
 );
 
 create table Delivery_Firm
 (
-  deliveryFirmID integer primary key,
+  deliveryFirmID serial primary key,
   address varchar(100),
-  name varchar(100) not null
+  nameOfDeliveryFirm varchar(100) not null
 );
 
 create table Delivery_Agent
 (
-  deliveryAgentID integer primary key,
-  name varchar(100),
+  deliveryAgentID serial primary key,
+  nameOfDeliveryAgent varchar(100),
   deliveryFirmID integer references Delivery_Firm(deliveryFirmID) not null
 );
 
 create table Orders
 (
-  orderID integer primary key,
+  orderID serial primary key,
   status varchar(50) not null,
-  date date not null,
+  dateOfOrder timestamp not null,
   totalPrice integer not null,
   adminID integer references Admins(UserID),
   customerID integer references Customer(UserID) not null,
