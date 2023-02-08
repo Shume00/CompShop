@@ -10,20 +10,20 @@ from django.db import models
 
 class Admins(models.Model):
     userid = models.OneToOneField('Users', models.DO_NOTHING, db_column='userid', primary_key=True)
-    type = models.CharField(max_length=50)
+    typeofadmin = models.CharField(max_length=50)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'admins'
 
 
 class Category(models.Model):
-    categoryid = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=50)
+    categoryid = models.AutoField(primary_key=True)
+    nameofcategory = models.CharField(max_length=50)
     subcategoryof = models.ForeignKey('self', models.DO_NOTHING, db_column='subcategoryof', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'category'
 
 
@@ -33,36 +33,36 @@ class Customer(models.Model):
     address = models.CharField(max_length=100)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'customer'
 
 
 class DeliveryAgent(models.Model):
-    deliveryagentid = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=100, blank=True, null=True)
+    deliveryagentid = models.AutoField(primary_key=True)
+    nameofdeliveryagent = models.CharField(max_length=100, blank=True, null=True)
     deliveryfirmid = models.ForeignKey('DeliveryFirm', models.DO_NOTHING, db_column='deliveryfirmid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'delivery_agent'
 
 
 class DeliveryFirm(models.Model):
-    deliveryfirmid = models.IntegerField(primary_key=True)
+    deliveryfirmid = models.AutoField(primary_key=True)
     address = models.CharField(max_length=100, blank=True, null=True)
-    name = models.CharField(max_length=100)
+    nameofdeliveryfirm = models.CharField(max_length=100)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'delivery_firm'
 
 
 class Manufacturer(models.Model):
-    manufacturerid = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=100)
+    manufacturerid = models.AutoField(primary_key=True)
+    nameofmanufacturer = models.CharField(max_length=100)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'manufacturer'
 
 
@@ -72,15 +72,15 @@ class Orderhasproduct(models.Model):
     productid = models.ForeignKey('Product', models.DO_NOTHING, db_column='productid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'orderhasproduct'
         unique_together = (('orderid', 'productid'),)
 
 
 class Orders(models.Model):
-    orderid = models.IntegerField(primary_key=True)
+    orderid = models.AutoField(primary_key=True)
     status = models.CharField(max_length=50)
-    date = models.DateField()
+    dateoforder = models.DateTimeField()
     totalprice = models.IntegerField()
     adminid = models.ForeignKey(Admins, models.DO_NOTHING, db_column='adminid', blank=True, null=True)
     customerid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customerid')
@@ -89,7 +89,7 @@ class Orders(models.Model):
     code = models.ForeignKey('Promotion', models.DO_NOTHING, db_column='code', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'orders'
 
 
@@ -100,20 +100,19 @@ class Price(models.Model):
     value = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'price'
         unique_together = (('productid', 'startdate'),)
 
 
 class Product(models.Model):
-    productid = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=100)
+    productid = models.AutoField(primary_key=True)
+    nameofproduct = models.CharField(max_length=100)
     adminid = models.ForeignKey(Admins, models.DO_NOTHING, db_column='adminid')
     manufacturerid = models.ForeignKey(Manufacturer, models.DO_NOTHING, db_column='manufacturerid')
-    categoryid = models.ForeignKey(Category, models.DO_NOTHING, db_column='categoryid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'product'
 
 
@@ -122,7 +121,7 @@ class ProductImages(models.Model):
     images = models.CharField(max_length=10000)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'product_images'
         unique_together = (('productid', 'images'),)
 
@@ -133,7 +132,7 @@ class Productisinsc(models.Model):
     scid = models.ForeignKey('ShoppingCart', models.DO_NOTHING, db_column='scid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'productisinsc'
         unique_together = (('productid', 'scid'),)
 
@@ -144,7 +143,7 @@ class Productisinsideso(models.Model):
     stockorderid = models.ForeignKey('StockOrder', models.DO_NOTHING, db_column='stockorderid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'productisinsideso'
         unique_together = (('productid', 'stockorderid'),)
 
@@ -154,49 +153,49 @@ class Productisofcategory(models.Model):
     productid = models.ForeignKey(Product, models.DO_NOTHING, db_column='productid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'productisofcategory'
         unique_together = (('categoryid', 'productid'),)
 
 
 class Promotion(models.Model):
-    code = models.CharField(primary_key=True, max_length=18)
+    code = models.CharField(primary_key=True, max_length=16)
     startdate = models.DateField()
     enddate = models.DateField(blank=True, null=True)
     percentage = models.IntegerField()
     adminid = models.ForeignKey(Admins, models.DO_NOTHING, db_column='adminid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'promotion'
 
 
 class ShoppingCart(models.Model):
-    scid = models.IntegerField(primary_key=True)
+    scid = models.AutoField(primary_key=True)
     customerid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customerid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'shopping_cart'
 
 
 class StockOrder(models.Model):
-    stockorderid = models.IntegerField(primary_key=True)
+    stockorderid = models.AutoField(primary_key=True)
     orderdate = models.DateField()
     adminid = models.ForeignKey(Admins, models.DO_NOTHING, db_column='adminid')
     manufacturerid = models.ForeignKey(Manufacturer, models.DO_NOTHING, db_column='manufacturerid')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'stock_order'
 
 
 class Users(models.Model):
-    userid = models.IntegerField(primary_key=True)
+    userid = models.AutoField(primary_key=True)
     username = models.CharField(unique=True, max_length=50, blank=True, null=True)
-    password = models.CharField(max_length=50)
-    name = models.CharField(max_length=100)
+    userpass = models.CharField(max_length=50)
+    nameofuser = models.CharField(max_length=100)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'users'
