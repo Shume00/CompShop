@@ -5,6 +5,7 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from django.contrib import admin
 from django.db import models
 
 
@@ -16,6 +17,7 @@ class Admins(models.Model):
         managed = True
         db_table = 'admins'
 
+admin.site.register(Admins)
 
 class Category(models.Model):
     categoryid = models.AutoField(primary_key=True)
@@ -26,6 +28,7 @@ class Category(models.Model):
         managed = True
         db_table = 'category'
 
+admin.site.register(Category)
 
 class Customer(models.Model):
     userid = models.OneToOneField('Users', models.DO_NOTHING, db_column='userid', primary_key=True)
@@ -36,6 +39,7 @@ class Customer(models.Model):
         managed = True
         db_table = 'customer'
 
+admin.site.register(Customer)
 
 class DeliveryAgent(models.Model):
     deliveryagentid = models.AutoField(primary_key=True)
@@ -46,6 +50,7 @@ class DeliveryAgent(models.Model):
         managed = True
         db_table = 'delivery_agent'
 
+admin.site.register(DeliveryAgent)
 
 class DeliveryFirm(models.Model):
     deliveryfirmid = models.AutoField(primary_key=True)
@@ -56,6 +61,7 @@ class DeliveryFirm(models.Model):
         managed = True
         db_table = 'delivery_firm'
 
+admin.site.register(DeliveryFirm)
 
 class Manufacturer(models.Model):
     manufacturerid = models.AutoField(primary_key=True)
@@ -65,6 +71,7 @@ class Manufacturer(models.Model):
         managed = True
         db_table = 'manufacturer'
 
+admin.site.register(Manufacturer)
 
 class Orderhasproduct(models.Model):
     quantity = models.IntegerField()
@@ -76,6 +83,7 @@ class Orderhasproduct(models.Model):
         db_table = 'orderhasproduct'
         unique_together = (('orderid', 'productid'),)
 
+admin.site.register(Orderhasproduct)
 
 class Orders(models.Model):
     orderid = models.AutoField(primary_key=True)
@@ -92,6 +100,7 @@ class Orders(models.Model):
         managed = True
         db_table = 'orders'
 
+admin.site.register(Orders)
 
 class Price(models.Model):
     productid = models.OneToOneField('Product', models.DO_NOTHING, db_column='productid', primary_key=True)
@@ -104,6 +113,7 @@ class Price(models.Model):
         db_table = 'price'
         unique_together = (('productid', 'startdate'),)
 
+admin.site.register(Price)
 
 class Product(models.Model):
     productid = models.AutoField(primary_key=True)
@@ -115,6 +125,7 @@ class Product(models.Model):
         managed = True
         db_table = 'product'
 
+admin.site.register(Product)
 
 class ProductImages(models.Model):
     productid = models.OneToOneField(Product, models.DO_NOTHING, db_column='productid', primary_key=True)
@@ -125,6 +136,7 @@ class ProductImages(models.Model):
         db_table = 'product_images'
         unique_together = (('productid', 'images'),)
 
+admin.site.register(ProductImages)
 
 class Productisinsc(models.Model):
     quantity = models.IntegerField()
@@ -136,6 +148,7 @@ class Productisinsc(models.Model):
         db_table = 'productisinsc'
         unique_together = (('productid', 'scid'),)
 
+admin.site.register(Productisinsc)
 
 class Productisinsideso(models.Model):
     quantity = models.IntegerField()
@@ -147,6 +160,7 @@ class Productisinsideso(models.Model):
         db_table = 'productisinsideso'
         unique_together = (('productid', 'stockorderid'),)
 
+admin.site.register(Productisinsideso)
 
 class Productisofcategory(models.Model):
     categoryid = models.OneToOneField(Category, models.DO_NOTHING, db_column='categoryid', primary_key=True)
@@ -157,6 +171,7 @@ class Productisofcategory(models.Model):
         db_table = 'productisofcategory'
         unique_together = (('categoryid', 'productid'),)
 
+admin.site.register(Productisofcategory)
 
 class Promotion(models.Model):
     code = models.CharField(primary_key=True, max_length=16)
@@ -169,6 +184,7 @@ class Promotion(models.Model):
         managed = True
         db_table = 'promotion'
 
+admin.site.register(Promotion)
 
 class ShoppingCart(models.Model):
     scid = models.AutoField(primary_key=True)
@@ -178,6 +194,7 @@ class ShoppingCart(models.Model):
         managed = True
         db_table = 'shopping_cart'
 
+admin.site.register(ShoppingCart)
 
 class StockOrder(models.Model):
     stockorderid = models.AutoField(primary_key=True)
@@ -189,6 +206,7 @@ class StockOrder(models.Model):
         managed = True
         db_table = 'stock_order'
 
+admin.site.register(StockOrder)
 
 class Users(models.Model):
     userid = models.AutoField(primary_key=True)
@@ -199,3 +217,5 @@ class Users(models.Model):
     class Meta:
         managed = True
         db_table = 'users'
+
+admin.site.register(Users)
