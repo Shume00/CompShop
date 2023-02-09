@@ -16,6 +16,10 @@ class Admins(models.Model):
     class Meta:
         managed = True
         db_table = 'admins'
+        verbose_name_plural = 'Admins'
+
+    def __str__(self):
+        return self.userid.username
 
 admin.site.register(Admins)
 
@@ -27,6 +31,10 @@ class Category(models.Model):
     class Meta:
         managed = True
         db_table = 'category'
+        verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return self.nameofcategory
 
 admin.site.register(Category)
 
@@ -38,6 +46,10 @@ class Customer(models.Model):
     class Meta:
         managed = True
         db_table = 'customer'
+        verbose_name_plural = 'Customers'
+
+    def __str__(self):
+        return self.userid.username
 
 admin.site.register(Customer)
 
@@ -49,6 +61,10 @@ class DeliveryAgent(models.Model):
     class Meta:
         managed = True
         db_table = 'delivery_agent'
+        verbose_name_plural = 'Delivery Agents'
+
+    def __str__(self):
+        return self.nameofdeliveryagent
 
 admin.site.register(DeliveryAgent)
 
@@ -60,6 +76,10 @@ class DeliveryFirm(models.Model):
     class Meta:
         managed = True
         db_table = 'delivery_firm'
+        verbose_name_plural = 'Delivery Firms'
+
+    def __str__(self):
+        return self.nameofdeliveryfirm
 
 admin.site.register(DeliveryFirm)
 
@@ -70,6 +90,10 @@ class Manufacturer(models.Model):
     class Meta:
         managed = True
         db_table = 'manufacturer'
+        verbose_name_plural = 'Manufacturers'
+
+    def __str__(self):
+        return self.nameofmanufacturer
 
 admin.site.register(Manufacturer)
 
@@ -82,6 +106,10 @@ class Orderhasproduct(models.Model):
         managed = True
         db_table = 'orderhasproduct'
         unique_together = (('orderid', 'productid'),)
+        verbose_name_plural = 'Ordershaveproducts'
+
+    def __str__(self):
+        return '{} - {}'.format(self.orderid,self.productid.nameofproduct)
 
 admin.site.register(Orderhasproduct)
 
@@ -99,6 +127,10 @@ class Orders(models.Model):
     class Meta:
         managed = True
         db_table = 'orders'
+        verbose_name_plural = 'Orders'
+
+    def __str__(self):
+        return str(self.orderid)
 
 admin.site.register(Orders)
 
@@ -112,6 +144,10 @@ class Price(models.Model):
         managed = True
         db_table = 'price'
         unique_together = (('productid', 'startdate'),)
+        verbose_name_plural = 'Prices'
+
+    def __str__(self):
+        return "Price for: " + self.productid.nameofproduct
 
 admin.site.register(Price)
 
@@ -124,6 +160,10 @@ class Product(models.Model):
     class Meta:
         managed = True
         db_table = 'product'
+        verbose_name_plural = 'Products'
+
+    def __str__(self):
+        return self.nameofproduct
 
 admin.site.register(Product)
 
@@ -135,6 +175,10 @@ class ProductImages(models.Model):
         managed = True
         db_table = 'product_images'
         unique_together = (('productid', 'images'),)
+        verbose_name_plural = 'Product Images'
+
+    def __str__(self):
+        return "Image for: " + self.productid.nameofproduct
 
 admin.site.register(ProductImages)
 
@@ -147,6 +191,10 @@ class Productisinsc(models.Model):
         managed = True
         db_table = 'productisinsc'
         unique_together = (('productid', 'scid'),)
+        verbose_name_plural = 'Productsareinsc'
+
+    def __str__(self):
+        return '{} - {}'.format(self.scid, self.productid.nameofproduct)
 
 admin.site.register(Productisinsc)
 
@@ -159,17 +207,26 @@ class Productisinsideso(models.Model):
         managed = True
         db_table = 'productisinsideso'
         unique_together = (('productid', 'stockorderid'),)
+        verbose_name_plural = 'Productsareinsideso'
+
+    def __str__(self):
+        return '{} - {}'.format(self.stockorderid,self.productid.nameofproduct)
+
 
 admin.site.register(Productisinsideso)
 
 class Productisofcategory(models.Model):
-    categoryid = models.OneToOneField(Category, models.DO_NOTHING, db_column='categoryid', primary_key=True)
-    productid = models.ForeignKey(Product, models.DO_NOTHING, db_column='productid')
+    productid = models.ForeignKey(Product, models.DO_NOTHING, db_column='productid', primary_key=True)
+    categoryid = models.OneToOneField(Category, models.DO_NOTHING, db_column='categoryid')
 
     class Meta:
         managed = True
         db_table = 'productisofcategory'
         unique_together = (('categoryid', 'productid'),)
+        verbose_name_plural = 'Productsareofcategories'
+
+    def __str__(self):
+        return '{} - {}'.format(self.productid.nameofproduct, self.categoryid.nameofcategory)
 
 admin.site.register(Productisofcategory)
 
@@ -183,6 +240,10 @@ class Promotion(models.Model):
     class Meta:
         managed = True
         db_table = 'promotion'
+        verbose_name_plural = 'Promotions'
+
+    def __str__(self):
+        return str(self.code)
 
 admin.site.register(Promotion)
 
@@ -193,6 +254,10 @@ class ShoppingCart(models.Model):
     class Meta:
         managed = True
         db_table = 'shopping_cart'
+        verbose_name_plural = 'Shopping Carts'
+
+    def __str__(self):
+        return str(self.scid)
 
 admin.site.register(ShoppingCart)
 
@@ -205,6 +270,10 @@ class StockOrder(models.Model):
     class Meta:
         managed = True
         db_table = 'stock_order'
+        verbose_name_plural = 'Stock Orders'
+
+    def __str__(self):
+        return str(self.stockorderid)
 
 admin.site.register(StockOrder)
 
@@ -217,5 +286,8 @@ class Users(models.Model):
     class Meta:
         managed = True
         db_table = 'users'
+        verbose_name_plural = 'Users'
+    def __str__(self):
+        return self.username
 
 admin.site.register(Users)
