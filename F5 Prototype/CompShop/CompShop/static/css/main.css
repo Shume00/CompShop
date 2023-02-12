@@ -1,3 +1,22 @@
-body{
-    background-color:lightblue;
+.cart-row{
+    display: flex;
+    align-items: stretch;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+}
+
+.quantity{
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.row-image{
+    width: 100px;
+}
+
+.card-img-top {
+    width: 50%;
+    height: 40vh;
+    object-fit: contain;
 }

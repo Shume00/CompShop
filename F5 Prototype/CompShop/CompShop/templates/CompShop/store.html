@@ -1,14 +1,30 @@
 {% extends 'CompShop/main.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CompShop Store</title>
-</head>
-<body>
-    {% block content %}
-        <h3> Store </h3>
-    {% endblock content %}
-</body>
-</html>
+{% block content %}
+    <div class="container mt-3">
+    <div class="row">
+
+        {% for product in products%}
+        <div class="col-md-auto">
+            <div class="card" style="width: 18rem;">
+
+                {% for image in productimages %}
+                    {% if image.productid.productid == product.productid %}
+                        <img src="{{ image.images }}" class="card-img-top" alt="..." style="object-fit:contain;">
+                    {% endif %}
+                {% endfor %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.nameofproduct }}</h5>
+                    <p class="card-text">{{ product.manufacturerid.nameofmanufacturer }}</p>
+                    <a href="#" class="btn btn-success">Add to Cart</a>
+                    <a href="#" class="btn btn-primary">View</a>
+                    <h6 style="display: inline-block; float: right;">{{ product.price.value}}MKD</h6>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    </div>
+{% endblock content %}
