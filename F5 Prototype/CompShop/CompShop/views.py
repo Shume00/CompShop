@@ -30,6 +30,14 @@ def checkout(request):
     context = {}
     return render(request, 'CompShop/checkout.html', context)
 
+def myorders(request):
+    user = request.user
+    orders = Orders.objects.filter(customerid=user.userid)
+    productsinorder = Orderhasproduct.objects.all()
+    context = {'orders': orders,
+               'products': productsinorder}
+    return render(request, 'CompShop/orders.html', context)
+
 
 def login_user(request):
     context = {}

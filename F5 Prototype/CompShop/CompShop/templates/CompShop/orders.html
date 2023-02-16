@@ -1,0 +1,27 @@
+{% extends 'CompShop/main.html' %}
+{% load static %}
+{% block content %}
+    <div class="container mt-3">
+        <div class="row align-items-md-stretch">
+
+            {% for order in orders %}
+                <div class="col-md-6">
+                    <div class="h-100 p-5 bg-light border rounded-3">
+                        <h4>Order #{{ order.orderid }}</h4>
+                        <p>Status: {{ order.status }}</p>
+                        <p>Date: {{ order.dateoforder }}</p>
+                        <p>Total Price: {{ order.totalprice }}</p>
+                        <ul class="list-group">
+                            {% for product in products %}
+                                {% if product.orderid.orderid == order.orderid %}
+                                    <li class="list-group-item">{{ product.productid.nameofproduct }}, {{ product.quantity }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock content %}
