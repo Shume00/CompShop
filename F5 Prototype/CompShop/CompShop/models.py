@@ -6,7 +6,9 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.contrib import admin
+from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
 
 
 class Admins(models.Model):
@@ -277,11 +279,50 @@ class StockOrder(models.Model):
 
 admin.site.register(StockOrder)
 
-class Users(models.Model):
+class MyUserManager(BaseUserManager):
+    def create_user(self, username, nameofuser, password=None):
+        if not username:
+            raise ValueError("Username is required")
+        if not nameofuser:
+            raise ValueError("Name of the user is required")
+
+        user = self.model(
+            username=username,
+            nameofuser=nameofuser
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, nameofuser, password=None, **kwargs):
+        user = self.create_user(
+            username=username,
+            nameofuser=nameofuser,
+            password=password
+        )
+        user.is_admin = True
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+
+
+class Users(AbstractBaseUser):
     userid = models.AutoField(primary_key=True)
-    username = models.CharField(unique=True, max_length=50, blank=True, null=True)
-    userpass = models.CharField(max_length=50)
-    nameofuser = models.CharField(max_length=100)
+    username = models.TextField(unique=True, max_length=255, blank=False, null=False)
+    password = models.TextField(max_length=255, blank=False, null=False)
+    nameofuser = models.TextField(max_length=255, blank=False, null=False)
+    is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
+
+    USERNAME_FIELD = 'username'
+
+    REQUIRED_FIELDS = ['nameofuser']
+
+    objects = MyUserManager()
 
     class Meta:
         managed = True
@@ -289,5 +330,11 @@ class Users(models.Model):
         verbose_name_plural = 'Users'
     def __str__(self):
         return self.username
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
 
 admin.site.register(Users)
