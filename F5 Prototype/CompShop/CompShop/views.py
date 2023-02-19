@@ -22,7 +22,10 @@ def store(request):
 
 
 def cart(request):
-    context = {}
+    user = request.user
+    itemsincart = Productisinsc.objects.filter(scid=user.userid)
+    context = {'user': user,
+               'itemsincart': itemsincart}
     return render(request, 'CompShop/cart.html', context)
 
 
