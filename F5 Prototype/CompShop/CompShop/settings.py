@@ -86,7 +86,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'OPTIONS': {
-            'options': '-c search_path=test'
+            'options': '-c search_path=project'
         },
         'HOST': 'localhost',
         'PORT': 9999,
