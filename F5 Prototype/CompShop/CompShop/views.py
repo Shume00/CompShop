@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
+import json
 from .models import *
 from .forms import *
 
@@ -27,6 +29,34 @@ def cart(request):
     context = {'user': user,
                'itemsincart': itemsincart}
     return render(request, 'CompShop/cart.html', context)
+
+def updateItem(request):
+    data = json.loads(request.body)
+    productId = data['productID']
+    action = data['action']
+    print('Action:', action)
+    print('Product:', productId)
+
+    currentUser = request.user
+    customer = currentUser.userid
+    product = Product.objects.get(productid=productId)
+    cart, created = ShoppingCart.objects.get_or_create(customerid=customer, scid=customer)
+    cartItem, created = Productisinsc.objects.get_or_create(productid=product, scid=cart)
+
+    if action == 'add':
+        if cartItem.quantity is None:
+            cartItem.quantity = 1
+        else:
+            cartItem.quantity = (cartItem.quantity + 1)
+    elif action == 'remove':
+        cartItem.quantity = (cartItem.quantity - 1)
+
+    cartItem.save()
+
+    if cartItem.quantity <= 0:
+        cartItem.delete()
+
+    return JsonResponse('Item was added', safe=False)
 
 
 def checkout(request):

@@ -22,6 +22,7 @@ urlpatterns = [
     path('', views.store, name='store'),
     path('cart/', views.cart, name='cart'),
     path('checkout/', views.checkout, name='checkout'),
+    path('update_item/', views.updateItem, name='update_item'),
     path('myorders/', views.myorders, name='myorders'),
     path('login_user', views.login_user, name='login'),
     path('logout_user', views.logout_user, name='logout'),

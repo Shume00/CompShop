@@ -185,7 +185,7 @@ class ProductImages(models.Model):
 admin.site.register(ProductImages)
 
 class Productisinsc(models.Model):
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(blank=True, null=True)
     productid = models.OneToOneField(Product, models.DO_NOTHING, db_column='productid', primary_key=True)
     scid = models.ForeignKey('ShoppingCart', models.DO_NOTHING, db_column='scid')
 
