@@ -10,12 +10,12 @@ for (var i = 0; i < updateBtns.length; i++){
         if(user === 'AnonymousUser'){
             console.log('Not logged in')
         }else{
-            updateUserOrder(productId, action)
+            updateUserCart(productId, action)
         }
     })
 }
 
-function updateUserOrder(productId, action){
+function updateUserCart(productId, action){
     console.log('User is logged in. Sending data...')
 
     var url = '/update_item/'

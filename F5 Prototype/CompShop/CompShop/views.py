@@ -4,7 +4,8 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
-import json
+from django.utils import timezone
+import json, datetime
 from .models import *
 from .forms import *
 
@@ -24,10 +25,16 @@ def store(request):
 
 
 def cart(request):
-    user = request.user
-    itemsincart = Productisinsc.objects.filter(scid=user.userid)
-    context = {'user': user,
-               'itemsincart': itemsincart}
+    if request.user.is_authenticated:
+        currentUser = request.user
+        customer = currentUser.userid
+        cart, created = ShoppingCart.objects.get_or_create(customerid=customer, scid=customer)
+        items = Productisinsc.objects.filter(scid=customer)
+    else:
+        items = []
+        cart = {'get_cart_total': 0,'get_cart_items': 0}
+
+    context = {'itemsincart': items, 'cart': cart}
     return render(request, 'CompShop/cart.html', context)
 
 def updateItem(request):
@@ -57,6 +64,31 @@ def updateItem(request):
         cartItem.delete()
 
     return JsonResponse('Item was added', safe=False)
+
+
+def makeOrder(request):
+    time = timezone.now()
+    data = json.loads(request.body)
+
+    if request.user.is_authenticated:
+        currentUser = request.user
+        customer = currentUser.userid
+        total = float(data['total'])
+        order = Orders.objects.create(status='New', dateoforder=time, totalprice=total, customerid_id=customer, scid_id=customer)
+        order.save()
+        products = Productisinsc.objects.filter(scid_id=customer)
+        print(products)
+        for product in products:
+            print(product.quantity)
+            print(order)
+            print(product.productid.productid)
+            print(product.productid.nameofproduct)
+            orderproducts = Orderhasproduct.objects.create(quantity=product.quantity, orderid_id=order.orderid, productid_id=product.productid.productid)
+            orderproducts.save()
+    else:
+        print('User is not logged in')
+
+    return JsonResponse('Payment complete', safe=False)
 
 
 def checkout(request):

@@ -188,7 +188,10 @@ class Productisinsc(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     productid = models.OneToOneField(Product, models.DO_NOTHING, db_column='productid', primary_key=True)
     scid = models.ForeignKey('ShoppingCart', models.DO_NOTHING, db_column='scid')
-
+    @property
+    def get_total(self):
+        total = self.productid.price.value * self.quantity
+        return total
     class Meta:
         managed = True
         db_table = 'productisinsc'
@@ -252,6 +255,18 @@ admin.site.register(Promotion)
 class ShoppingCart(models.Model):
     scid = models.AutoField(primary_key=True)
     customerid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customerid')
+
+    @property
+    def get_cart_total(self):
+        cartitems = self.productisinsc_set.all()
+        total = sum([item.get_total for item in cartitems])
+        return total
+
+    @property
+    def get_cart_items(self):
+        cartitems = self.productisinsc_set.all()
+        total = sum([item.quantity for item in cartitems])
+        return total
 
     class Meta:
         managed = True
