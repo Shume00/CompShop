@@ -42,8 +42,8 @@
                         <div style="flex: 1">
                             <p class="quantity">{{ item.quantity }}</p>
                             <div class="quantity">
-                                <i class="bi bi-plus"></i>
-                                <i class="bi bi-dash"></i>
+                                <a data-product="{{ item.productid.productid }}" data-action="add" class="update-cart btn btn-primary"><i class="bi bi-plus"></i></a>
+                                <a data-product="{{ item.productid.productid }}" data-action="remove" class="update-cart btn btn-secondary"><i class="bi bi-dash"></i></a>
                             </div>
                         </div>
                         <div style="flex: 1">{% widthratio item.quantity 1 item.productid.price.value %}</div>
