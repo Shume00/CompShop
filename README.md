@@ -1,3 +1,5 @@
+https://develop.finki.ukim.mk/projects/CompShop
+
 Членови на тимот:
 
 •	Андреј Шумковски @Shume00
