@@ -35,7 +35,7 @@
                     {% for item in itemsincart %}
                         <div class="cart-row">
                             <div style="flex: 2"><img class="row-image" src="{{ item.productid.productimages.images }}"></div>
-                            <div style="flex: 2">{{ item.productid.nameofproduct }}</div>
+                            <div style="flex: 2">{{ item.productid.manufacturerid.nameofmanufacturer }} {{ item.productid.nameofproduct }}</div>
                             <div style="flex: 1">{{ item.productid.price.value }}</div>
                             <div style="flex: 1">
                                 <p class="quantity">{{ item.quantity }}</p>

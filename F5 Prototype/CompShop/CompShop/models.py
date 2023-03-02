@@ -100,9 +100,10 @@ class Manufacturer(models.Model):
 admin.site.register(Manufacturer)
 
 class Orderhasproduct(models.Model):
-    quantity = models.IntegerField()
-    orderid = models.OneToOneField('Orders', models.DO_NOTHING, db_column='orderid', primary_key=True)
+    id = models.AutoField(primary_key=True)
+    orderid = models.ForeignKey('Orders', models.DO_NOTHING, db_column='orderid')
     productid = models.ForeignKey('Product', models.DO_NOTHING, db_column='productid')
+    quantity = models.IntegerField()
 
     class Meta:
         managed = True
@@ -185,9 +186,10 @@ class ProductImages(models.Model):
 admin.site.register(ProductImages)
 
 class Productisinsc(models.Model):
-    quantity = models.IntegerField(blank=True, null=True)
-    productid = models.OneToOneField(Product, models.DO_NOTHING, db_column='productid', primary_key=True)
+    id = models.AutoField(primary_key = True)
+    productid = models.ForeignKey('Product', models.DO_NOTHING, db_column='productid')
     scid = models.ForeignKey('ShoppingCart', models.DO_NOTHING, db_column='scid')
+    quantity = models.IntegerField(blank=True, null=True)
     @property
     def get_total(self):
         total = self.productid.price.value * self.quantity
@@ -204,9 +206,10 @@ class Productisinsc(models.Model):
 admin.site.register(Productisinsc)
 
 class Productisinsideso(models.Model):
-    quantity = models.IntegerField()
-    productid = models.OneToOneField(Product, models.DO_NOTHING, db_column='productid', primary_key=True)
+    id = models.AutoField(primary_key=True)
+    productid = models.ForeignKey('Product', models.DO_NOTHING, db_column='productid')
     stockorderid = models.ForeignKey('StockOrder', models.DO_NOTHING, db_column='stockorderid')
+    quantity = models.IntegerField()
 
     class Meta:
         managed = True

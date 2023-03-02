@@ -14,7 +14,7 @@
                         <ul class="list-group">
                             {% for product in products %}
                                 {% if product.orderid.orderid == order.orderid %}
-                                    <li class="list-group-item">{{ product.productid.nameofproduct }}, {{ product.quantity }}</li>
+                                    <li class="list-group-item">{{ product.productid.manufacturerid.nameofmanufacturer }} {{ product.productid.nameofproduct }}, {{ product.quantity }}</li>
                                 {% endif %}
                             {% endfor %}
                         </ul>

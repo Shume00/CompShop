@@ -85,15 +85,12 @@ def makeOrder(request):
             print(product.productid.nameofproduct)
             orderproducts = Orderhasproduct.objects.create(quantity=product.quantity, orderid_id=order.orderid, productid_id=product.productid.productid)
             orderproducts.save()
+        products.delete()
     else:
         print('User is not logged in')
 
     return JsonResponse('Payment complete', safe=False)
 
-
-def checkout(request):
-    context = {}
-    return render(request, 'CompShop/checkout.html', context)
 
 def myorders(request):
     user = request.user
