@@ -1,0 +1,58 @@
+1. Да се прикажат категориите во опаѓачки редослед во однос на вкупен број на нарачани продукти, како и најпродаван продукт од секоја категорија.
+
+  select c.nameofcategory, sum(ohp.quantity),
+        min((select p1.nameofproduct 
+        from product p1
+        join productisofcategory poc1 on poc1.productid = p1.productid 
+        left outer join orderhasproduct ohp1 on ohp1.productid = p1.productid 
+        where poc1.categoryid = c.categoryid 
+        group by p1.nameofproduct 
+        order by sum(ohp1.quantity) desc 
+        limit 1)) as top_product
+        from category c
+        join productisofcategory poc on poc.categoryid = c.categoryid 
+        join product p on p.productid = poc.productid
+        join orderhasproduct ohp on ohp.productid = p.productid 
+        group by c.nameofcategory
+
+2. За секој од купувачите да се прикаже вкупниот број на купени артикли, вкупниот број на нарачки, како и просечната сума на нарачка.
+
+  select c.userid, count(distinct o.orderid) as naracki, sum(o.totalprice)/count(o) as prosecna_suma, sum(o2.quantity) as artikli
+from customer c 
+join orders o on c.userid = o.customerid 
+join orderhasproduct o2 on o.orderid = o2.orderid 
+group by c.userid
+
+3. За секоја доставувачка фирма да се пресмета колку нарачки и колку артикли доставиле, како и вкупната сума од сите нарачки.
+
+select nameofdeliveryfirm, count(distinct o.orderid) as naracki, sum(o2.quantity) as produkti, sum(o.totalprice)  
+from delivery_firm df 
+join orders o on df.deliveryfirmid = o.deliveryfirmid 
+join orderhasproduct o2 on o.orderid = o2.orderid 
+group by nameofdeliveryfirm
+
+4.За секој производител да се пресмета вкупен број на продадени продукти, вкупна количина на производи на залиха од тој производител и најпродаван продукт за секој од нив.
+
+select m.nameofmanufacturer, sum(o.quantity) as kupeni, sum(p2.quantity) as kolicina,
+min(( select p1.nameofproduct 
+        from product p1
+        left outer join orderhasproduct ohp1 on ohp1.productid = p1.productid 
+        where p1.manufacturerid = m.manufacturerid 
+        group by p1.nameofproduct 
+        order by sum(ohp1.quantity) desc 
+        limit 1
+)) as top_product
+from manufacturer m 
+join product p on m.manufacturerid = p.manufacturerid 
+join orderhasproduct o on p.productid = o.productid 
+join stock_order so on m.manufacturerid = so.manufacturerid 
+join productisinsideso p2 on so.stockorderid = p2.stockorderid 
+group by m.nameofmanufacturer 
+order by kupeni desc
+
+5. За секој промотивен попуст, да се пресмета колкав попуст е даден(колкава е загубата).
+
+select p.code, sum(o.totalprice*p.percentage/100.0)
+from promotion p 
+join orders o on p.code = o.code
+group by p.code
