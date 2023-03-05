@@ -28,7 +28,7 @@ def cart(request):
     if request.user.is_authenticated:
         currentUser = request.user
         customer = currentUser.userid
-        cart, created = ShoppingCart.objects.get_or_create(customerid=customer, scid=customer)
+        cart, created = ShoppingCart.objects.get_or_create(customerid_id=customer, scid=customer)
         items = Productisinsc.objects.filter(scid=customer)
     else:
         items = []
@@ -129,6 +129,8 @@ def register_user(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             user = form.save()
+            customer = Customer.objects.create(userid_id=user.userid)
+            customer.save()
             login(request, user)
             messages.success(request, "Registration successful.")
             return redirect('store')
